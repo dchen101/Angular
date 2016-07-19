@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+<script type="text/javascript" src="../exif.js"></script>
+
+</head>
+<body>
+Upload a local file to read Exif data.
+<br/>
+<input id="file-input" type="file" />
+<p>Created Date: <span id="created_date"></span></p>
+<br/><br/>
+
+<script>
+
+document.getElementById("file-input").onchange = function(e) {
+  EXIF.getData(e.target.files[0], function() {
+    exif = EXIF.getAllTags(this);
+
+    alert(JSON.stringify(exif, null, 4));
+
+    //Get date
+    try{
+      if (exif && (exif.DateTimeOriginal || exif.DateTime)){
+        date = exif.DateTimeOriginal || exif.DateTime;
+
+        tmp = date.split(" ");
+        alert(tmp);
+        tmp[0] = tmp[0].split(":").join("-");
+        date = new Date(tmp[0] + "T" + tmp[1]);
+        alert(date);
+        document.getElementById("created_date").textContent = date;
+      }
+    }catch(e){};
+  });
+}
+
+</script>
+</body>
+</html>
