@@ -52,13 +52,12 @@
 
     if (files) {
       [].forEach.call(files, readAndPreview);
-      getFiles();
     }
 
   }
 
 
-  function initMap() {
+/*  function initMap() {
     console.log("initMap()");
     var myLatLng = {lat: 37.3189, lng:  -122.07};
 
@@ -66,24 +65,17 @@
     center: myLatLng,
     zoom: 2
     });
-  }
+  } */
 
     // Function for adding a marker to the page.
-    function addMarker(location) {
-        marker = new google.maps.Marker({
-            position: location,
-            map: map
-        });
-    }
-
     // Testing the addMarker function
-    function TestMarker() {
+ /*   function TestMarker() {
            CentralPark = {lat: 37.7699298, lng: -122.4469157};
            addMarker(CentralPark);
     }
+*/
 
-
-  function getFiles() {
+/*  function getFiles() {
   console.log('getFiles()');
   var input = document.getElementById('browse');
   console.log("input.files: " + input.files);
@@ -94,9 +86,10 @@
               console.log("var file: " + file);
               var reader = new FileReader; // use HTML5 file reader to get the file
               console.log("var reader: " + reader);
-              reader.onloadend = function () {
+              reader.onloadend = function(e) {
                   // get EXIF data
-                  var exif = EXIF.readFromBinaryFile(new BinaryFile(this.result));
+                  var exif = EXIF.readFromBinaryFile(new BinaryFile(e.target.result));
+
                   var lat = exif.GPSLatitude;
                   var lon = exif.GPSLongitude;
 
@@ -112,7 +105,7 @@
               reader.readAsBinaryString(file);
   }
 
-  }
+  } */
 
 
 

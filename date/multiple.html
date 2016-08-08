@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<script type="text/javascript" src="../exif.js"></script>
+  <script src="http://maps.google.com/maps/api/js?sensor=false"
+          type="text/javascript"></script>
+    <style>
+       #map {
+        width: 100%;
+        height: 400px;
+      }
+    </style>
+</head>
+<body>
+Upload a local file to read Exif data.
+<br/>
+<input id="files" type="file" multiple>
+<p>Coordinates: <span id="coordinates"></span></p>
+<div id="map"></div>
+<div id="preview"></div>
+<br/><br/>
+<script>
+
+</script>
+<script>
+  function previewFiles() {
+
+    var preview = document.querySelector('#preview');
+    var files   = document.querySelector('input[type=file]').files;
+    var input = document.querySelector('input[type=file]');
+    alert(input);
+    function readAndPreview(file) {
+
+      // Make sure `file.name` matches our extensions criteria
+      if ( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
+        var reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+          var image = new Image();
+          image.height = 100;
+          image.title = file.name;
+          image.src = reader.result;
+          preview.appendChild( image );
+        }, false);
+
+        reader.readAsDataURL(file);
+
+
+      }
+    }
+
+    if (files) {
+      [].forEach.call(files, readAndPreview);
+    }
+
+  }
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 1,
+      center: new google.maps.LatLng(-33.92, 151.25),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+
+
+
+      function addMarker(lat, lon, src) {
+        console.log(src);
+        var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(lat, lon),
+        map: map,
+        icon: src,
+        zoom: 2
+        });
+        var infowindow = new google.maps.InfoWindow({
+          content: src
+        });
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+
+      }
+function getSrc(){
+  var previewDiv = document.getElementById('preview');
+  console.log(previewDiv);
+  var previewPics = previewDiv.getElementByTagName('img');
+  var divArray = [];
+  for(var i = 0; i < e.target.files.length; i++){
+    divArray.push(previewPics[i].innerHTML);
+  }
+  return divArray;
+}
+
+
+    // Function for adding a marker to the page.
+
+
+document.getElementById("files").onchange = function(e) {
+  previewFiles();
+  for(var i = 0; i < e.target.files.length; i++){
+
+  var x = i;
+  EXIF.getData(e.target.files[i], function() {
+    exif = EXIF.getAllTags(this);
+
+    var previewDiv = document.getElementById('preview');
+    var src = previewDiv.getElementsByTagName('img')[x];
+    alert(JSON.stringify(exif, null, 4));
+    //Get date
+    try{
+      if (exif && exif.GPSLatitudeRef && exif.GPSLongitudeRef){
+        var previewDiv = document.getElementById('preview');
+        lat = exif.GPSLatitude;
+        lon = exif.GPSLongitude;
+        var latRef = exif.GPSLatitudeRef || "N";
+        var lonRef = exif.GPSLongitudeRef || "W";
+        lat = (lat[0] + lat[1]/60 + lat[2]/3600) * (latRef == "N" ? 1 : -1);
+        lon = (lon[0] + lon[1]/60 + lon[2]/3600) * (lonRef == "W" ? -1 : 1);
+        alert(lat + " " + lon);
+        latlon = {lat: lat, lng: lon};
+        addMarker(lat, lon, src);
+      }
+
+    }catch(e){};
+  });
+  }
+
+}
+
+</script>
+</body>
+</html>

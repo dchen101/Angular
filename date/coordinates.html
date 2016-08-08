@@ -17,13 +17,24 @@ Upload a local file to read Exif data.
 <input id="file-input" type="file" />
 <p>Coordinates: <span id="coordinates"></span></p>
 <div id="map"></div>
+<div id="preview"></div>
 <br/><br/>
 
 <script>
+
+
       function initMap(myLatLng) {
         var mapDiv = document.getElementById('map');
         var map = new google.maps.Map(mapDiv, {
-            center: {lat: 44.540, lng: -78.546},
+            center: {lat: 25.0330, lng: 121.5654},
+            zoom: 8
+        });
+      }
+
+      function addMarker(myLatLng) {
+        var mapDiv = document.getElementById('map');
+        var map = new google.maps.Map(mapDiv, {
+            center: myLatLng,
             zoom: 8
         });
         var marker = new google.maps.Marker({
@@ -31,6 +42,7 @@ Upload a local file to read Exif data.
           map: map,
           title: 'Hello World!'
         });
+
       }
 
     // Function for adding a marker to the page.
@@ -38,6 +50,7 @@ Upload a local file to read Exif data.
 
 document.getElementById("file-input").onchange = function(e) {
   EXIF.getData(e.target.files[0], function() {
+    alert("Files length" + e.target.files.length);
     exif = EXIF.getAllTags(this);
 
     alert(JSON.stringify(exif, null, 4));
@@ -53,7 +66,7 @@ document.getElementById("file-input").onchange = function(e) {
         lon = (lon[0] + lon[1]/60 + lon[2]/3600) * (lonRef == "W" ? -1 : 1);
         alert(lat + " " + lon);
         latlon = {lat: lat, lng: lon};
-        initMap(latlon);
+        addMarker(latlon);
         alert("This is latlon: "+ latlon);
         document.getElementById("coordinates").textContent = "Latitude " + lat + " Longitude: " + lon;
       }
